@@ -34,19 +34,20 @@ Pre-processing:
       Tile raster code needs input image and output directory for image tiles and will create image tiles.
       Input tile directory into segmentation code. Run ‘mosaic_tiles.py’ on segmented tile outputs to re-mosaic the image for the next step.
 
+
 Wetland Gain/Loss/Type change
-    - Wetland_gain_loss.py
-    - Author: Andrew Poley
-    - Purpose: Calculate wetland gain, loss, and type change from segmented radiometric change
-    - Inputs:
-        - Mosaiced segmented radiometric change image
-        - Change thresholds:
-            - CVA magnitude used to determine change/no-change
-            - TCG_upper is used to determine wetland gain
-            - TCG_lower is used to determine wetland loss
-        - Land cover classification of year 1
-    - Output:
-        - Classified map of wetland gain, loss, and type change
+1) Wetland_gain_loss.py
+    Author: Andrew Poley
+    Purpose: Calculate wetland gain, loss, and type change from segmented radiometric change
+    Inputs:
+        Mosaiced segmented radiometric change image
+        Change thresholds:
+            CVA magnitude used to determine change/no-change
+            TCG_upper is used to determine wetland gain
+            TCG_lower is used to determine wetland loss
+        Land cover classification of year 1
+    Output:
+        Classified map of wetland gain, loss, and type change
           -1 = wetland loss
           1 = wetland gain
           100 = wetland change type
