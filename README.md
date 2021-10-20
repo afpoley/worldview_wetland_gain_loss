@@ -1,9 +1,9 @@
-Documentation for semi-automated wetland gain, loss, and type change detection
+Documentation for semi-automated wetland gain, loss, and type change detection.
 Poley 10/20/2021
 
 Pre-processing:
 1) Normalize worldview images
-    normalize_WV_update.py
+    normalize_WV.py
     Author: Mike Billmire
     Purpose: Normalize worldview images that cover the same extent to each other
     Inputs:
@@ -33,7 +33,6 @@ Pre-processing:
       NOTE: code takes a very long time to run on larger areas. Run ‘tile_raster.py’ on radiometric change image before running segmentation to speed up processing.
       Tile raster code needs input image and output directory for image tiles and will create image tiles.
       Input tile directory into segmentation code. Run ‘mosaic_tiles.py’ on segmented tile outputs to re-mosaic the image for the next step.
-
 
 Wetland Gain/Loss/Type change
     Wetland_gain_loss.py
