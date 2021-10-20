@@ -37,8 +37,8 @@ Pre-processing:
 
 Wetland Gain/Loss/Type change
 1) Wetland_gain_loss.py
-    Author: Andrew Poley
-    Purpose: Calculate wetland gain, loss, and type change from segmented radiometric change
+    * Author: Andrew Poley
+    * Purpose: Calculate wetland gain, loss, and type change from segmented radiometric change
     Inputs:
         Mosaiced segmented radiometric change image
         Change thresholds:
