@@ -52,6 +52,7 @@ Wetland Gain/Loss/Type change
           1 = wetland gain
           100 = wetland change type
 
+
     NOTES:
       Brief code description
           Use provided thresholds to determine change/no change in CVA image
