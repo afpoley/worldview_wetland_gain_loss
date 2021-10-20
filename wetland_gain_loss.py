@@ -1,4 +1,6 @@
-# Wetland gain/loss automation
+# Wetland gain, loss, and type change automation
+# Inputs: 
+# Poley 10/20/2021
 import rasterio
 from rasterio import mask
 import geopandas as gpd
@@ -43,14 +45,14 @@ def clip_raster(rst_fp, shp, ref_meta):
 
 
 # Input files
-# fp_cva = r'D:\Users\afpoley\Desktop\USFWF_TEMP\stClair\change\wetlandGainLoss\stClair2014_2019_mag_ang_TCG_segmentation.tif'
-# fp_class = r'D:\Users\afpoley\Desktop\USFWF_TEMP\stClair\change\wetlandGainLoss\stClair2014_reclassification.tif'
-# fp_out = r'D:\Users\afpoley\Desktop\USFWF_TEMP\stClair\change\wetlandGainLoss'
-# out_base = 'stClair2014_2019_mag2'
-fp_cva = r'D:\Users\afpoley\Desktop\USFWF_TEMP\greenBay\GB2018_2020_mag_ang_TCG_segmentation_clip.tif'
-fp_class = r'D:\Users\afpoley\Desktop\USFWF_TEMP\greenBay\greenbay2018_reclass.tif'
-fp_out = r'D:\Users\afpoley\Desktop\USFWF_TEMP\greenBay\wetland_gainloss'
-out_base = 'GB2018_2020_mag4'
+fp_cva = r'D:\Users\afpoley\Desktop\USFWF_TEMP\stClair\change\wetlandGainLoss\stClair2014_2019_mag_ang_TCG_segmentation.tif'
+fp_class = r'D:\Users\afpoley\Desktop\USFWF_TEMP\stClair\change\wetlandGainLoss\stClair2014_reclassification.tif'
+fp_out = r'D:\Users\afpoley\Desktop\USFWF_TEMP\stClair\change\wetlandGainLoss'
+out_base = 'stClair2014_2019'
+# fp_cva = r'D:\Users\afpoley\Desktop\USFWF_TEMP\greenBay\GB2018_2020_mag_ang_TCG_segmentation_clip.tif'
+# fp_class = r'D:\Users\afpoley\Desktop\USFWF_TEMP\greenBay\greenbay2018_reclass.tif'
+# fp_out = r'D:\Users\afpoley\Desktop\USFWF_TEMP\greenBay\wetland_gainloss'
+# out_base = 'GB2018_2020_mag4'
 # fp_cva = r'D:\Users\afpoley\Desktop\USFWF_TEMP\Erie\wetland_gainloss\Erie2019_2020_mag_ang_TCG_segmentation.tif'
 # fp_class = r'D:\Users\afpoley\Desktop\USFWF_TEMP\Erie\wetland_gainloss\erie2019_classification_reclass.tif'
 # fp_out = r'D:\Users\afpoley\Desktop\USFWF_TEMP\Erie\wetland_gainloss'
@@ -58,8 +60,8 @@ out_base = 'GB2018_2020_mag4'
 # change_angle = 0.3
 change_mag = 120
 TCG_upper = 10000
-TCG_middle = 30
-TCG_lower = -60
+TCG_middle = 300
+TCG_lower = -100
 
 
 # Open images (Expects images are the exact same # of rows/cols and same projection
