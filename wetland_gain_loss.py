@@ -1,5 +1,6 @@
 # Wetland gain, loss, and type change automation
-# Inputs: 
+# Inputs: segmented CVA, initial classification (reclassified see README for class info), output directory,
+# output base filename (typically "locationYear1_year2"), magnitude threshold, and TCG lower and upper thresholds
 # Poley 10/20/2021
 import rasterio
 from rasterio import mask
@@ -49,24 +50,13 @@ fp_cva = r'D:\Users\afpoley\Desktop\USFWF_TEMP\stClair\change\wetlandGainLoss\st
 fp_class = r'D:\Users\afpoley\Desktop\USFWF_TEMP\stClair\change\wetlandGainLoss\stClair2014_reclassification.tif'
 fp_out = r'D:\Users\afpoley\Desktop\USFWF_TEMP\stClair\change\wetlandGainLoss'
 out_base = 'stClair2014_2019'
-# fp_cva = r'D:\Users\afpoley\Desktop\USFWF_TEMP\greenBay\GB2018_2020_mag_ang_TCG_segmentation_clip.tif'
-# fp_class = r'D:\Users\afpoley\Desktop\USFWF_TEMP\greenBay\greenbay2018_reclass.tif'
-# fp_out = r'D:\Users\afpoley\Desktop\USFWF_TEMP\greenBay\wetland_gainloss'
-# out_base = 'GB2018_2020_mag4'
-# fp_cva = r'D:\Users\afpoley\Desktop\USFWF_TEMP\Erie\wetland_gainloss\Erie2019_2020_mag_ang_TCG_segmentation.tif'
-# fp_class = r'D:\Users\afpoley\Desktop\USFWF_TEMP\Erie\wetland_gainloss\erie2019_classification_reclass.tif'
-# fp_out = r'D:\Users\afpoley\Desktop\USFWF_TEMP\Erie\wetland_gainloss'
-# out_base = 'Erie2019_2020_mag2'
-# change_angle = 0.3
 change_mag = 120
-TCG_upper = 10000
-TCG_middle = 300
+TCG_upper = 300
 TCG_lower = -100
 
 
 # Open images (Expects images are the exact same # of rows/cols and same projection
 classification, class_meta = open_raster(fp_class, 1)
-# cva_angle, cva_meta = open_raster(fp_cva, 2)
 cva_mag, cva_meta = open_raster(fp_cva, 1)
 TCG, _ = open_raster(fp_cva, 3)
 
@@ -79,10 +69,9 @@ angle_threshold = angle_threshold.astype(np.int8)
 
 # Wetland gain or loss. Reclassify TCG to gain(>0) or loss(<0)
 TCG_threshold = TCG.astype(np.int32)
-TCG_threshold[np.where((TCG_threshold > TCG_lower) & (TCG_threshold < TCG_middle))] = 0
+TCG_threshold[np.where((TCG_threshold > TCG_lower) & (TCG_threshold < TCG_upper))] = 0
 TCG_threshold[np.where(TCG_threshold <= TCG_lower)] = -1
-TCG_threshold[np.where(TCG_threshold > TCG_upper)] = 0
-TCG_threshold[np.where((TCG_threshold >= TCG_middle) & (TCG_threshold <= TCG_upper))] = 1
+TCG_threshold[np.where(TCG_threshold >= TCG_upper)] = 1
 
 
 # reclassify classification to mask out non-wetland classes
@@ -95,7 +84,6 @@ wetlands = np.where(wetlands == 5, 0, wetlands)  # Grasslands
 wetlands = np.where(wetlands == 6, 0, wetlands)  # Deciduous
 wetlands = np.where(wetlands == 7, 0, wetlands)  # Evergreen
 wetlands = np.where(wetlands == 8, 0, wetlands)  # Shrubs
-# wetlands = np.where(wetlands == 12, 0, wetlands)  # Water
 
 
 # Apply threshold for wetland change

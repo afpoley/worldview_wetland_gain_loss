@@ -1,3 +1,7 @@
+# Normalize Worldview images to reference image
+# Author: Mike Billmire
+# Inputs: reference image name, directory with worldview images including reference and target images, PIFS shapefile,
+# no data value, band range. May need to edit line 68 to match names of worldview images.
 import os, shutil, glob, sys
 from datetime import datetime as dt
 from osgeo import gdal, ogr
@@ -61,7 +65,6 @@ if get_stats:
     od = {}
     for raster in rasters:
         if raster not in (
-                # 'wv_hessel_20160616_AOI.tif',
         ) and "wv" in raster:
             print(raster)
 

@@ -1,6 +1,5 @@
 # Segment image using scikit-learn segmentation (slic)
-# Input: Directory to CVA tiles
-# Output: Directory where segment tiles will be saved
+# Input: Directory to CVA tiles, directory where segment tiles will be saved
 # Poley 9/20/2021
 
 import numpy as np
@@ -18,11 +17,7 @@ def open_raster(rst_fp):
 
 
 # File paths
-# fp = r'D:\Users\afpoley\Desktop\erie2019_2020_mag_ang_GVI.tif'
-# fp = 'D:\\Users\\afpoley\\Desktop\\USFWF_TEMP\\Erie\\wetland_gainloss\\cva_tiles\\'
 fp = 'D:\\Users\\afpoley\\Desktop\\USFWF_TEMP\\stClair\\change\\wetlandGainLoss\\cva_tiles\\'
-# out_fp = r'D:\Users\afpoley\Desktop\erie2019_2020_mag_ang_GVI_segment3.tif'
-# out_fp = 'D:\\Users\\afpoley\\Desktop\\USFWF_TEMP\\Erie\\wetland_gainloss\\segment_tiles\\'
 out_fp = 'D:\\Users\\afpoley\\Desktop\\USFWF_TEMP\\stClair\\change\\wetlandGainLoss\\segment_tiles\\'
 
 

@@ -15,12 +15,12 @@ Pre-processing:
 2) Radiometric change
     * wv_CVA.py
     * Author: Andrew Poley
-    * Purpose: calculate change magnitude, angle, and tasseled cap greenness (GVI)
+    * Purpose: calculate change magnitude, angle, and tasseled cap greenness (TCG)
     * Inputs:
       * WV images from year 1 & year 2
       * Output name and directory
     * Output:
-      * Single image with 3 bands (magnitude, angle, and GVI
+      * Single image with 3 bands (magnitude, angle, and TCG)
 3) Image segmentation
     * Segmentation.py
     * Author: Andrew Poley
@@ -29,7 +29,7 @@ Pre-processing:
       * Output image from radiometric change code
       * Output directory
     * Output:
-      * Segmented image with mean values for each segment. 4-band image: mean-magnitude, mean-angle, mean-GVI, and segment number
+      * Segmented image with mean values for each segment. 4-band image: mean-magnitude, mean-angle, mean-TCG, and segment number
       * NOTE: code takes a very long time to run on larger areas. Run ‘tile_raster.py’ on radiometric change image before running segmentation to speed up processing.
       * Tile raster code needs input image and output directory for image tiles and will create image tiles.
       Input tile directory into segmentation code. Run ‘mosaic_tiles.py’ on segmented tile outputs to re-mosaic the image for the next step.

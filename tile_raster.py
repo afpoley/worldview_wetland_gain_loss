@@ -1,4 +1,6 @@
 # Tile input raster into smaller chunks. Set tile size using tile_width and tile_height
+# Inputs: directory with image to be tiled, filename of image to be tiled, output directory to store tiles, tile name
+# Note: only edit first part of "output_filename" and leave "_{}-{}.tif" this will be updated with tile number
 # Poley 2/1/2021
 import os
 from itertools import product
@@ -6,16 +8,11 @@ import rasterio as rio
 from rasterio import windows
 
 # Input file path & file name
-# in_path = 'D:\\Users\\afpoley\\Desktop\\USFWF_TEMP\\Erie\\wetland_gainloss\\'
 in_path = 'D:\\Users\\afpoley\\Desktop\\USFWF_TEMP\\stClair\\change\\wetlandGainLoss\\'
-# input_filename = 'erie2019_2020_mag_ang_GVI_clip.tif'
 input_filename = 'stClair2014_2019_mag_ang_GVI2.tif'
 
-# out_path = 'D:\\Users\\afpoley\\Desktop\\USFWF_TEMP\\Erie\\wetland_gainloss\\cva_tiles\\'
 out_path = 'D:\\Users\\afpoley\\Desktop\\USFWF_TEMP\\stClair\\change\\wetlandGainLoss\\cva_tiles\\'
 output_filename = 'cva_tile_{}-{}.tif'
-# output_filename = 'change_clumps_tile_{}-{}.tif'
-# output_filename = 'change_tile_{}-{}.tif'
 
 
 def get_tiles(ds, width, height):

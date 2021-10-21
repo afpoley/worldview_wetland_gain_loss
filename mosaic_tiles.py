@@ -1,4 +1,5 @@
 # Mosaic image tiles into single image
+# Input: directory of segmentated tiles, output mosaic image file path
 # Poley 2/1/2021
 import glob
 import rasterio
@@ -13,9 +14,6 @@ def open_raster(rst_fp, files):
 
 
 # Input file path to image tiles
-# fp = 'D:\\Users\\afpoley\\Desktop\\USFWF_TEMP\\Erie\\wetland_gainloss\\segment_tiles\\'
-# out_fp = 'D:\\Users\\afpoley\\Desktop\\USFWF_TEMP\\Erie\\wetland_gainloss\\Erie2019_2020_mag_ang_TCG_segmentation.tif'
-
 fp = 'D:\\Users\\afpoley\\Desktop\\USFWF_TEMP\\stClair\\change\\wetlandGainLoss\\segment_tiles\\'
 out_fp = 'D:\\Users\\afpoley\\Desktop\\USFWF_TEMP\\stClair\\change\\wetlandGainLoss\\stClair2014_2019_mag_ang_TCG_segmentation.tif'
 

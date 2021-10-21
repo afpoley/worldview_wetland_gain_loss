@@ -1,5 +1,6 @@
 # Calculate change vector analysis (CVA) for Worldview images.
-# Exports change magnitude and change angle rasters
+# Exports change magnitude, angle, and tasseled cap greeness (TCG) as single 3-band image
+# Inputs: year 1 & 2 worldview images, output directory, output filename
 # Poley 9/16/2021
 import rasterio
 import rasterio.mask
@@ -50,26 +51,21 @@ CVA_mag = np.sqrt(sum((wv1-wv2)**2)).astype(np.float64)
 # Spectral indices
 # WV bands: 0=coastal, 1=blue, 2=green, 3=yellow, 4=red, 5=red edge, 6=NIR1, 7=NIR2
 # Tasseled cap green vegetation index (TC_GVI)
-TC_GVI1 = -0.283 * wv1[1, :, :] - 0.660 * wv1[3, :, :] + 0.577 * wv1[4, :, :] + 0.388 + wv1[6, :, :]
-TC_GVI2 = -0.283 * wv2[1, :, :] - 0.660 * wv2[3, :, :] + 0.577 * wv2[4, :, :] + 0.388 + wv2[6, :, :]
-dTC_GVI = TC_GVI2 - TC_GVI1
-# # Tasseled cap yellow vegetation index (TC_YVI)
-# TC_YVI1 = -0.899 * wv1[1, :, :] + 0.428 * wv1[3, :, :] + 0.076 * wv1[4, :, :] - 0.041 + wv1[6, :, :]
-# TC_YVI2 = -0.899 * wv2[1, :, :] + 0.428 * wv2[3, :, :] + 0.076 * wv2[4, :, :] - 0.041 + wv2[6, :, :]
-# dTC_YVI = TC_YVI2 - TC_YVI1
+TCG1 = -0.283 * wv1[1, :, :] - 0.660 * wv1[3, :, :] + 0.577 * wv1[4, :, :] + 0.388 + wv1[6, :, :]
+TCG2 = -0.283 * wv2[1, :, :] - 0.660 * wv2[3, :, :] + 0.577 * wv2[4, :, :] + 0.388 + wv2[6, :, :]
+dTCG = TCG2 - TCG1
+
 
 # Copy and update output metadata
 CVA_mag_meta = out_meta
 CVA_ang_meta = out_meta
 CVA_tc_gvi_meta = out_meta
-# CVA_tc_yvi_meta = out_meta
 CVA_mag_meta.update({'height': CVA_mag.shape[0], 'width': CVA_mag.shape[1], 'count': 1, 'dtype': np.float32})
 CVA_ang_meta.update({'height': CVA_angle.shape[0], 'width': CVA_angle.shape[1], 'count': 1, 'dtype': np.float32})
-CVA_tc_gvi_meta.update({'height': dTC_GVI.shape[0], 'width': dTC_GVI.shape[1], 'count': 1, 'dtype': np.float32})
-# CVA_tc_yvi_meta.update({'height': dTC_YVI.shape[0], 'width': dTC_YVI.shape[1], 'count': 1, 'nodata': 0, 'dtype': np.float32})
+CVA_tc_gvi_meta.update({'height': dTCG.shape[0], 'width': dTCG.shape[1], 'count': 1, 'dtype': np.float32})
 
 
-# Export images
+# Export images (uncomment if you want to export each index as separate image)
 # with rasterio.open(out_fp + '\\' + outName + '_mag.tif', "w", **CVA_mag_meta) as dest:
 #     dest.write(CVA_mag, 1)
 #
@@ -79,11 +75,9 @@ CVA_tc_gvi_meta.update({'height': dTC_GVI.shape[0], 'width': dTC_GVI.shape[1], '
 # with rasterio.open(out_fp + '\\' + outName + '_GVI.tif', "w", **CVA_tc_gvi_meta) as dest:
 #     dest.write(dTC_GVI, 1)
 
-# with rasterio.open(out_fp + 'TC_YVI.tif', "w", **CVA_tc_yvi_meta) as dest:
-#     dest.write(dTC_YVI, 1)
-
 #%%
-stack = np.stack([CVA_mag, CVA_angle, dTC_GVI])
+# Export image
+stack = np.stack([CVA_mag, CVA_angle, dTCG])
 stack = np.nan_to_num(stack, nan=-999)
 stack = stack.astype(np.float32)
 
@@ -94,7 +88,7 @@ CVA_meta_all.update({'height': stack.shape[1],
                      'nodata': -999,
                      'dtype': stack.dtype}
                     )
-with rasterio.open(out_fp + '\\' + outName + '_mag_ang_GVI.tif', "w", **CVA_meta_all) as dest:
+with rasterio.open(out_fp + '\\' + outName + '_mag_ang_TCG.tif', "w", **CVA_meta_all) as dest:
     dest.write(stack)
 
 print('done')
