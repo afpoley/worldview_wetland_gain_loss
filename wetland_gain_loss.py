@@ -1,6 +1,6 @@
 # Wetland gain, loss, and type change automation
 # Inputs: segmented CVA, initial classification (reclassified see README for class info), output directory,
-# output base filename (typically "locationYear1_year2"), magnitude threshold, and TCG lower and upper thresholds
+# output base filename (typically "locationYear1_year2"), magnitude threshold, and GVI lower and upper thresholds
 # Poley 10/20/2021
 import rasterio
 from rasterio import mask
@@ -46,32 +46,32 @@ def clip_raster(rst_fp, shp, ref_meta):
 
 
 # Input files
-fp_cva = r'D:\Users\afpoley\Desktop\USFWF_TEMP\stClair\change\wetlandGainLoss\stClair2014_2019_mag_ang_TCG_segmentation.tif'
+fp_cva = r'D:\Users\afpoley\Desktop\USFWF_TEMP\stClair\change\wetlandGainLoss\stClair2014_2019_mag_ang_GVI_segmentation.tif'
 fp_class = r'D:\Users\afpoley\Desktop\USFWF_TEMP\stClair\change\wetlandGainLoss\stClair2014_reclassification.tif'
 fp_out = r'D:\Users\afpoley\Desktop\USFWF_TEMP\stClair\change\wetlandGainLoss'
 out_base = 'stClair2014_2019'
 change_mag = 120
-TCG_upper = 300
-TCG_lower = -100
+GVI_upper = 300
+GVI_lower = -100
 
 
 # Open images (Expects images are the exact same # of rows/cols and same projection
 classification, class_meta = open_raster(fp_class, 1)
 cva_mag, cva_meta = open_raster(fp_cva, 1)
-TCG, _ = open_raster(fp_cva, 3)
+GVI, _ = open_raster(fp_cva, 3)
 
 
 # threshold CVA to change=1 and no-change=0
 # angle_threshold = np.where(cva_angle >= change_angle, 1, 0)
-angle_threshold = np.where(cva_mag >= change_mag, 1, 0)
-angle_threshold = angle_threshold.astype(np.int8)
+mag_threshold = np.where(cva_mag >= change_mag, 1, 0)
+mag_threshold = mag_threshold.astype(np.int8)
 
 
-# Wetland gain or loss. Reclassify TCG to gain(>0) or loss(<0)
-TCG_threshold = TCG.astype(np.int32)
-TCG_threshold[np.where((TCG_threshold > TCG_lower) & (TCG_threshold < TCG_upper))] = 0
-TCG_threshold[np.where(TCG_threshold <= TCG_lower)] = -1
-TCG_threshold[np.where(TCG_threshold >= TCG_upper)] = 1
+# Wetland gain or loss. Reclassify GVI to gain(>0) or loss(<0)
+GVI_threshold = GVI.astype(np.int32)
+GVI_threshold[np.where((GVI_threshold > GVI_lower) & (GVI_threshold < GVI_upper))] = 0
+GVI_threshold[np.where(GVI_threshold <= GVI_lower)] = -1
+GVI_threshold[np.where(GVI_threshold >= GVI_upper)] = 1
 
 
 # reclassify classification to mask out non-wetland classes
@@ -87,15 +87,15 @@ wetlands = np.where(wetlands == 8, 0, wetlands)  # Shrubs
 
 
 # Apply threshold for wetland change
-wetland_change = angle_threshold * wetlands
-wetland_gainLoss = TCG_threshold * wetland_change
+wetland_change = mag_threshold * wetlands
+wetland_gainLoss = GVI_threshold * wetland_change
 
 
-# Reclassify to wetland gain & loss
-wetland_gainLoss[np.where(wetland_gainLoss == 12)] = 100
-wetland_gainLoss[np.where((wetland_gainLoss > 0) & (wetland_gainLoss < 100))] = 1
-wetland_gainLoss[np.where(wetland_gainLoss == -12)] = 0
-wetland_gainLoss[np.where(wetland_gainLoss < 0)] = -1
+# Reclassify to wetland gain & loss (for more info, refer to overview Gain/Loss powerpoint in project folder)
+wetland_gainLoss[np.where(wetland_gainLoss == 12)] = 100                            # wetland change type
+wetland_gainLoss[np.where((wetland_gainLoss > 0) & (wetland_gainLoss < 100))] = 1   # wetland gain
+wetland_gainLoss[np.where(wetland_gainLoss == -12)] = 0                             # no change
+wetland_gainLoss[np.where(wetland_gainLoss < 0)] = -1                               # wetland loss
 
 
 # # Export wetland change/no-change image

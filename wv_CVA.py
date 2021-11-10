@@ -51,9 +51,10 @@ CVA_mag = np.sqrt(sum((wv1-wv2)**2)).astype(np.float64)
 # Spectral indices
 # WV bands: 0=coastal, 1=blue, 2=green, 3=yellow, 4=red, 5=red edge, 6=NIR1, 7=NIR2
 # Tasseled cap green vegetation index (TC_GVI)
-TCG1 = -0.283 * wv1[1, :, :] - 0.660 * wv1[3, :, :] + 0.577 * wv1[4, :, :] + 0.388 + wv1[6, :, :]
-TCG2 = -0.283 * wv2[1, :, :] - 0.660 * wv2[3, :, :] + 0.577 * wv2[4, :, :] + 0.388 + wv2[6, :, :]
-dTCG = TCG2 - TCG1
+# Reference https://www.l3harrisgeospatial.com/docs/broadbandgreenness.html#Green5
+GVI1 = -0.283 * wv1[1, :, :] - 0.660 * wv1[3, :, :] + 0.577 * wv1[4, :, :] + 0.388 + wv1[6, :, :]
+GVI2 = -0.283 * wv2[1, :, :] - 0.660 * wv2[3, :, :] + 0.577 * wv2[4, :, :] + 0.388 + wv2[6, :, :]
+dGVI = GVI2 - GVI1
 
 
 # Copy and update output metadata
@@ -62,7 +63,7 @@ CVA_ang_meta = out_meta
 CVA_tc_gvi_meta = out_meta
 CVA_mag_meta.update({'height': CVA_mag.shape[0], 'width': CVA_mag.shape[1], 'count': 1, 'dtype': np.float32})
 CVA_ang_meta.update({'height': CVA_angle.shape[0], 'width': CVA_angle.shape[1], 'count': 1, 'dtype': np.float32})
-CVA_tc_gvi_meta.update({'height': dTCG.shape[0], 'width': dTCG.shape[1], 'count': 1, 'dtype': np.float32})
+CVA_tc_gvi_meta.update({'height': dGVI.shape[0], 'width': dGVI.shape[1], 'count': 1, 'dtype': np.float32})
 
 
 # Export images (uncomment if you want to export each index as separate image)
@@ -77,7 +78,7 @@ CVA_tc_gvi_meta.update({'height': dTCG.shape[0], 'width': dTCG.shape[1], 'count'
 
 #%%
 # Export image
-stack = np.stack([CVA_mag, CVA_angle, dTCG])
+stack = np.stack([CVA_mag, CVA_angle, dGVI])        # Add any additional indices here
 stack = np.nan_to_num(stack, nan=-999)
 stack = stack.astype(np.float32)
 
@@ -88,7 +89,9 @@ CVA_meta_all.update({'height': stack.shape[1],
                      'nodata': -999,
                      'dtype': stack.dtype}
                     )
-with rasterio.open(out_fp + '\\' + outName + '_mag_ang_TCG.tif', "w", **CVA_meta_all) as dest:
+
+# Modify output extension to account for any new indices added to output
+with rasterio.open(out_fp + '\\' + outName + '_mag_ang_GVI.tif', "w", **CVA_meta_all) as dest:
     dest.write(stack)
 
 print('done')
