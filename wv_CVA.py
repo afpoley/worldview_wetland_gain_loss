@@ -1,5 +1,5 @@
 # Calculate change vector analysis (CVA) for Worldview images.
-# Exports change magnitude, angle, and tasseled cap greeness (TCG) as single 3-band image
+# Exports change magnitude, angle, and green vegetation index (TCG) as single 3-band image
 # Inputs: year 1 & 2 worldview images, output directory, output filename
 # Poley 9/16/2021
 import rasterio
@@ -50,7 +50,7 @@ CVA_mag = np.sqrt(sum((wv1-wv2)**2)).astype(np.float64)
 
 # Spectral indices
 # WV bands: 0=coastal, 1=blue, 2=green, 3=yellow, 4=red, 5=red edge, 6=NIR1, 7=NIR2
-# Tasseled cap green vegetation index (TC_GVI)
+# Tasseled cap green vegetation index (GVI)
 # Reference https://www.l3harrisgeospatial.com/docs/broadbandgreenness.html#Green5
 GVI1 = -0.283 * wv1[1, :, :] - 0.660 * wv1[3, :, :] + 0.577 * wv1[4, :, :] + 0.388 + wv1[6, :, :]
 GVI2 = -0.283 * wv2[1, :, :] - 0.660 * wv2[3, :, :] + 0.577 * wv2[4, :, :] + 0.388 + wv2[6, :, :]
