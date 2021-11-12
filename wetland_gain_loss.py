@@ -7,7 +7,6 @@ from rasterio import mask
 import geopandas as gpd
 import numpy as np
 import subprocess
-import gdal
 
 
 def open_raster(rst_fp, band):
@@ -16,33 +15,6 @@ def open_raster(rst_fp, band):
         crs = src.crs
         rst = src.read(band)
     return rst, src_meta
-
-
-def aoi_extent(img):
-    fp_shp = fp_out + '\\' + img.split('\\')[-1][:-4] + '.shp'
-    cmd = f"gdaltindex -f geoJSON {fp_shp} {img}"
-    subprocess.run(cmd)
-    return fp_shp
-
-
-def clip_raster(rst_fp, shp, ref_meta):
-    with rasterio.open(rst_fp) as src:
-        # convert AOI coordinates to image coordinates if different
-        if src.crs != ref_meta['crs']:
-            shp = shp.to_crs(src.crs)
-
-        # clip image to AOI extent
-        rst, rst_transform = rasterio.mask.mask(src, shp.geometry, crop=True)
-        meta = src.meta
-
-    # update metadata to new clip extent
-    meta.update({"driver": "GTiff",
-                 "height": rst.shape[1],
-                 "width": rst.shape[2],
-                 "transform": rst_transform,
-                 "count": rst.shape[0]
-                 })
-    return rst, meta
 
 
 # Input files
